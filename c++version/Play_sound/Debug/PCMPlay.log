@@ -1,0 +1,31 @@
+﻿cl : 命令行 warning D9035: “Gm”选项已否决，并将在将来的版本中移除
+  PCMPlay.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winnt.h(417,27): error C2146: 语法错误: 缺少“;”(在标识符“PVOID64”的前面)
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winnt.h(417,34): error C4430: 缺少类型说明符 - 假定为 int。注意: C++ 不支持默认 int
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winnt.h(13375,13): error C3646: “Buffer”: 未知重写说明符
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winnt.h(13375,19): error C4430: 缺少类型说明符 - 假定为 int。注意: C++ 不支持默认 int
+E:\csci576\final_project\Play_sound\PCMPlay.cpp(207,13): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+E:\csci576\final_project\Play_sound\PCMPlay.cpp(208,9): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+E:\csci576\final_project\Play_sound\PCMPlay.cpp(248,5): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  dxutil.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winnt.h(417,27): error C2146: 语法错误: 缺少“;”(在标识符“PVOID64”的前面)
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winnt.h(417,34): error C4430: 缺少类型说明符 - 假定为 int。注意: C++ 不支持默认 int
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winnt.h(13375,13): error C3646: “Buffer”: 未知重写说明符
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winnt.h(13375,19): error C4430: 缺少类型说明符 - 假定为 int。注意: C++ 不支持默认 int
+E:\csci576\final_project\Play_sound\dxutil.cpp(46,5): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+E:\csci576\final_project\Play_sound\dxutil.cpp(66,5): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+E:\csci576\final_project\Play_sound\dxutil.cpp(77,5): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+E:\csci576\final_project\Play_sound\dxutil.cpp(88,5): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+E:\csci576\final_project\Play_sound\dxutil.cpp(107,9): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+E:\csci576\final_project\Play_sound\dxutil.cpp(487,6): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+E:\csci576\final_project\Play_sound\dxutil.cpp(489,6): warning C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+E:\csci576\final_project\Play_sound\dxutil.cpp(537,6): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+E:\csci576\final_project\Play_sound\dxutil.cpp(539,6): warning C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+E:\csci576\final_project\Play_sound\dxutil.cpp(608,5): warning C4996: '_vsnprintf': This function or variable may be unsafe. Consider using _vsnprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  CS576SoundUtil.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winnt.h(417,27): error C2146: 语法错误: 缺少“;”(在标识符“PVOID64”的前面)
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winnt.h(417,34): error C4430: 缺少类型说明符 - 假定为 int。注意: C++ 不支持默认 int
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winnt.h(13375,13): error C3646: “Buffer”: 未知重写说明符
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winnt.h(13375,19): error C4430: 缺少类型说明符 - 假定为 int。注意: C++ 不支持默认 int
+E:\csci576\final_project\Play_sound\CS576SoundUtil.cpp(212,3): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  正在生成代码...
