@@ -11,11 +11,14 @@ import java.util.*;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 
+import com.github.psambit9791.wavfile.WavFile;
+
 
 public class AdvHandler
 {
   public static final int WIDTH = 480;
   public static final int HEIGHT = 270;
+  static WavFile a;
   String videopath;
   String audiopath;
   // Timer timer;
@@ -42,8 +45,29 @@ public class AdvHandler
   Stack<Integer> time_clip = new Stack<Integer>();
 
   public static final int FRAMERATE = 30;
+  
+  public double average(int[] array, int read) {
+	  int sum = 0;
+	  for (int i = 0; i < read; i++) {
+		  sum += array[i];
+	  }
+	  return (double)sum / (double)read;
+  }
+  
+  public double variance(double a[], int n) {
+	  double sum = 0;
 
-  public AdvHandler(String videoPath)
+	  for (int i = 0; i < n; i++)
+		  sum += a[i];
+	  double mean = (double)sum /(double)n;
+	  double sqDiff = 0;
+	  for (int i = 0; i < n; i++)
+		  sqDiff += (a[i] - mean) * (a[i] - mean);
+
+	  return (double)sqDiff / n;
+}
+
+  public AdvHandler(String videoPath, String audioPath)
   {
     int period = 1000 / FRAMERATE;
     videopath = videoPath;
@@ -63,9 +87,27 @@ public class AdvHandler
         e.printStackTrace();
     }
 
-
+    try {
+    	a = WavFile.openWavFile(new File("./dataset2/Videos/data_test2.wav"));
+    } catch (Exception e) {
+    	e.printStackTrace();
+    }
+    int[] buffer = new int[1600];
+    double[] store = new double[4000];
+    int read = 0;
+    double avg = 0.0;
+    double sum = 0;
+    int count = 0;
     while(true)
     {
+    	try {
+			read = a.readFrames(buffer, 1600);
+			avg = average(buffer, read);
+			store[curFrame - count] = avg;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	sum += avg;
       try
       {
       int offset = 0;
@@ -74,7 +116,7 @@ public class AdvHandler
       while (offset < bytes.length && (numRead=videoStream.read(bytes, offset, bytes.length-offset)) >= 0) {
           offset += numRead;
       }
-      if(numRead < 0)
+      if(numRead < 0 || read < 0)
       {
         break;
       }
@@ -152,12 +194,26 @@ public class AdvHandler
               ++ind;
           }
       }
-
-      if (sum_diff/(HEIGHT * WIDTH) > 170)
+      //System.out.println("current curFrame: " + curFrame + "  differ sum = " + sum_diff/(HEIGHT * WIDTH));
+      if (sum_diff/(HEIGHT * WIDTH) > 186)
       {
-        //System.out.println("current curFrame: " + curFrame + "  differ sum = " + sum_diff/(HEIGHT * WIDTH));
-
-        time_clip.push(curFrame);
+    	  System.out.println("current curFrame: " + curFrame + "  differ sum = " + sum_diff/(HEIGHT * WIDTH));
+    	  if (curFrame != 0) {
+    		  double al = variance(store, curFrame - count);
+    		  System.out.println(al + " " + curFrame);
+    		  if (al > 70000) {
+    			  if (count != time_clip.lastElement()) {
+    				  time_clip.push(count);
+    			  }
+    			  time_clip.push(curFrame);
+    		  }
+    	  } else {
+    		  time_clip.push(curFrame);
+    	  }
+        System.out.println("time_clip: " + time_clip);
+        sum = 0;
+        count = curFrame;
+        
       }
       difR = 0;
       difG = 0;
@@ -180,22 +236,29 @@ public class AdvHandler
     Integer[] arr = null;
     arr = time_clip.toArray(new Integer[time_clip.size()]);
     int prev = arr[0];
+    int count = 0;
     for(int i =1;i<time_clip.size();i++)
     {
       // System.out.println("nonono:" + arr[i]);
-      if (arr[i] - prev <  390 && flag == 0)
+      if (arr[i] - prev < 440 && flag == 0)
       {
         res.push(prev);
-        flag = 1;
+        flag ++;
       }
-      if(flag == 1 && arr[i] - prev >= 390)
+      if(flag >= 1 && arr[i] - prev >= 440)
       {
         res.push(prev);
+        count++;
         flag = 0;
       }
       prev = arr[i];
+      count = 0;
     }
     if (flag == 1) {
+    	int size = res.size();
+    	res.remove(size - 1);
+    }
+    if (flag > 1) {
     	res.push(9000);
     }
     return res;

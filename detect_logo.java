@@ -29,12 +29,12 @@ class logoDetect {
 	static Map<String, List<Integer>> map;
     public static void main(String[] args) throws IOException {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        AdvHandler advHandler = new AdvHandler(args[0]);
-        Stack<Integer> result = advHandler.get_frame_list();
-        System.out.println("result: " + result);
+        //AdvHandler advHandler = new AdvHandler(args[0], args[1]);
+        //Stack<Integer> result = advHandler.get_frame_list();
+        //System.out.println("result: " + result);
         detect(args[0]);
         System.out.println("map: " + map);
-        deleteReplace(args[1], args[2], args[3], result);
+        //deleteReplace(args[1], args[2], args[3], result);
         
         
     }
@@ -50,8 +50,8 @@ class logoDetect {
     	return result;
     }
     // mode 0 is normal frame
-    // mode 1 is for brand1 - subway
-    // mode 2 is for brand2 - starbucks
+    // mode 1 is for brand1 - nfl
+    // mode 2 is for brand2 - mcd
     public static int getmode(Stack<Integer> adv, int count) {
     	for(int i = 0; i < adv.size(); i = i + 2) {
         	if (i == 0) {
@@ -70,8 +70,11 @@ class logoDetect {
         		}
         	}
         	if (count >= adv.get(i) && count < adv.get(i + 1)) {
-        		int diff1 = findmin(map.get("subway"), adv.get(i));
-        		int diff2 = findmin(map.get("starbucks"), adv.get(i));
+        		int diff1 = findmin(map.get("nfl"), adv.get(i));
+        		int diff2 = findmin(map.get("mcd"), adv.get(i));
+        		if (diff1 == 10000 && diff2 == 10000) {
+        			return 0;
+        		}
         		if (diff1 < diff2) {
         			return 1;
         		} else {
@@ -123,13 +126,14 @@ class logoDetect {
             while (offsetlast < byteslast.length && (numReadlast=tmpStream.read(byteslast, offsetlast, byteslast.length-offsetlast)) >= 0) {
                 offsetlast += numReadlast;
             }
-            if (numReadlast < 0 || read < 0) {
+            if (numReadlast <= 0 || read <= 0) {
             	win.close();
                 break;
             }
             mode = getmode(adv, count);
             if (mode == -1) {
             	System.out.println("ERROR!!! return -1");
+            	System.out.println(numReadlast);
             	break;
             }
             if (mode == 0) {
@@ -144,7 +148,7 @@ class logoDetect {
             if (mode == 1 && done1) {
             	System.out.println("current frame: " + count);
             	try {
-                    new1Stream = new FileInputStream("./dataset/Ads/Subway_Ad_15s.rgb");
+                    new1Stream = new FileInputStream("./dataset2/Ads/nfl_Ad_15s.rgb");
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -163,7 +167,7 @@ class logoDetect {
             	done1 = false;
             	
             	try {
-                	wnew1 = WavFile.openWavFile(new File("./dataset/Ads/Subway_Ad_15s.wav"));
+                	wnew1 = WavFile.openWavFile(new File("./dataset2/Ads/nfl_Ad_15s.wav"));
                 	int frameread = 0;
                 	do {
                 		frameread = wnew1.readFrames(buffer, 1600);
@@ -177,7 +181,7 @@ class logoDetect {
             if (mode == 2 && done2) {
             	System.out.println("current frame: " + count);
             	try {
-                    new2Stream = new FileInputStream("./dataset/Ads/Starbucks_Ad_15s.rgb");
+                    new2Stream = new FileInputStream("./dataset2/Ads/mcd_Ad_15s.rgb");
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -195,7 +199,7 @@ class logoDetect {
             	}
             	done2 = false;
             	try {
-                	wnew2 = WavFile.openWavFile(new File("./dataset/Ads/Starbucks_Ad_15s.wav"));
+                	wnew2 = WavFile.openWavFile(new File("./dataset2/Ads/mcd_Ad_15s.wav"));
                 	int frameread1 = 0;
                 	do {
                 		frameread1 = wnew2.readFrames(buffer, 1600);
@@ -237,7 +241,7 @@ class logoDetect {
     public static Mat getBrandhist(String brand) throws IOException {
     	// read from brand file
         try {
-            starStream = new FileInputStream("./dataset/Brand Images/" + brand);
+            starStream = new FileInputStream("./dataset2/Brand Images/" + brand);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -263,8 +267,8 @@ class logoDetect {
     }
 
     public static void detect(String videoPath) throws IOException {
-        Mat h_brand1 = getBrandhist("starbucks_logo.rgb");
-        Mat h_brand2 = getBrandhist("subway_logo.rgb");
+        Mat h_brand1 = getBrandhist("Mcdonalds_logo.raw");
+        Mat h_brand2 = getBrandhist("nfl_logo.rgb");
         map  = new HashMap<String, List<Integer>>();
         List<Integer> ph1 = new ArrayList<Integer>();
         List<Integer> ph2 = new ArrayList<Integer>();
@@ -272,25 +276,25 @@ class logoDetect {
         
         // read one frame from video Path
         try {
-            videoStream = new FileInputStream(videoPath);
+            videoStream = new FileInputStream(videoPath);  
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        int windoww = 48;
-        int windowh = 27;
+        int windoww = 128;
+        int windowh = 120;
         int shiftw = 480 - windoww;
         int shifth = 270 - windowh;
         int count = 0;
         int total = 270 * 480;
         boolean change = false;
         boolean change1 = false;
-        /*
+        
         try {
         	fout = new FileOutputStream("./tmp.rgb");
         } catch (Exception e) {
         	e.printStackTrace();
         }
-        */
+
         int max_w1 = 0;
         int max_h1 = 0;
         int max_w2 = 0;
@@ -307,7 +311,7 @@ class logoDetect {
                 offset += numRead;
             }
             
-            if (((count >= 1800 && count <= 2020) || (count >=5070 && count <= 5340)) && count % 10 == 0) {
+            if (((count >= 2220 && count <= 2250) || (count >=4260 && count <= 4440)) && count % 10 == 0) {
 		        Mat mf = new Mat(windowh, windoww, CvType.CV_8UC3);
 		        for (int i = 0; i < shiftw; i = i + 5) {
 		        	for (int j = 0; j < shifth; j = j + 5) {
@@ -336,29 +340,29 @@ class logoDetect {
 		        		}
 		        	}
 		        }
-		        if (max_compare2 > 0.1 && max_compare2 < 0.15 && (count >= 1800 && count <= 2020)) {
+		        if (/*max_compare2 > 0.1 && max_compare2 < 0.15 &&*/ (count >= 2220 && count <= 2250)) {
 		        	change = true;
 		        	ph1.add(count);
 		        } else {
 		        	change = false;
 		        }
-		        if (max_compare1 > 0.09 && max_compare1 < 0.104 && (count >= 5070 && count <= 5340)) {
+		        if (/*max_compare1 > 0.09 && max_compare1 < 0.104 &&*/ (count >= 4260 && count <= 4440)) {
 		        	change1 = true;
 		        	ph2.add(count);
 		        } else {
 		        	change1 = false;
 		        }
-		        //System.out.println("current frame: " + count);
-		        //System.out.println("correlated for 1: " + max_compare1);
-		        //System.out.println("correlated for 2: " + max_compare2);
-		        //System.out.println("x,y for 1: " + max_h1 + " " + max_w1);
-		        //System.out.println("correlated for 2: " + max_h2 + " " + max_w2);
+		        System.out.println("current frame: " + count);
+		        System.out.println("correlated for 1: " + max_compare1);
+		        System.out.println("correlated for 2: " + max_compare2);
+		        System.out.println("x,y for 1: " + max_h1 + " " + max_w1);
+		        System.out.println("correlated for 2: " + max_h2 + " " + max_w2);
 		       
             }
-            if ((count >= 1800 && count <= 2020)) {
+            if ((count >= 2220 && count <= 2260)) {
             	if (change) {
-    	        	for (int q = -1; q < 1; q++) {
-    		        	for (int u = -1; u < windoww + 1; u++) {
+    	        	for (int q = 0; q < 1; q++) {
+    		        	for (int u = 0; u < windoww + 1; u++) {
     		        		bytes[u + max_w2 + (max_h2 + q) * 480] = (byte)255;
     		        		bytes[u + max_w2 + (max_h2 + q) * 480 + total] = (byte)255;
     		        		bytes[u + max_w2 + (max_h2 + q) * 480 + total * 2] = (byte)0;
@@ -366,7 +370,7 @@ class logoDetect {
     		        		bytes[u + max_w2 + (max_h2 + q + windowh) * 480 + total] = (byte)255;
     		        		bytes[u + max_w2 + (max_h2 + q + windowh) * 480 + total * 2] = (byte)0;
     		        	}
-    		        	for (int t = -1; t < windowh + 1; t++) {
+    		        	for (int t = 0; t < windowh + 1; t++) {
     		        		bytes[q + max_w2 + (max_h2 + t) * 480] = (byte)255;
     		        		bytes[q + max_w2 + (max_h2 + t) * 480 + total] = (byte)255;
     		        		bytes[q + max_w2 + (max_h2 + t) * 480 + total * 2] = (byte)0;
@@ -377,10 +381,10 @@ class logoDetect {
     		        }
     	        }
             }
-            if ((count >= 5070 && count <= 5350)) {
+            if ((count >= 4260 && count <= 4450)) {
             	if (change1) {
-    	        	for (int q = -1; q < 1; q++) {
-    		        	for (int u = -1; u < windoww + 1; u++) {
+    	        	for (int q = 0; q < 2; q++) {
+    		        	for (int u = 0; u < windoww; u++) {
     		        		bytes[u + max_w1 + (max_h1 + q) * 480] = (byte)255;
     		        		bytes[u + max_w1 + (max_h1 + q) * 480 + total] = (byte)0;
     		        		bytes[u + max_w1 + (max_h1 + q) * 480 + total * 2] = (byte)0;
@@ -388,7 +392,7 @@ class logoDetect {
     		        		bytes[u + max_w1 + (max_h1 + q + windowh) * 480 + total] = (byte)0;
     		        		bytes[u + max_w1 + (max_h1 + q + windowh) * 480 + total * 2] = (byte)0;
     		        	}
-    		        	for (int t = -1; t < windowh + 1; t++) {
+    		        	for (int t = 0; t < windowh; t++) {
     		        		bytes[q + max_w1 + (max_h1 + t) * 480] = (byte)255;
     		        		bytes[q + max_w1 + (max_h1 + t) * 480 + total] = (byte)0;
     		        		bytes[q + max_w1 + (max_h1 + t) * 480 + total * 2] = (byte)0;
@@ -401,14 +405,14 @@ class logoDetect {
             }
             
             
-            //fout.write(bytes);
+            fout.write(bytes);
             if (numRead < 0) {
                 break;
             }
             count++;
         }
         
-        map.put("starbucks", ph2);
-        map.put("subway", ph1);
+        map.put("mcd", ph2);
+        map.put("nfl", ph1);
     }
 }
