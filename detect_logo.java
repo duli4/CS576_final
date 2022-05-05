@@ -29,12 +29,12 @@ class logoDetect {
 	static Map<String, List<Integer>> map;
     public static void main(String[] args) throws IOException {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        //AdvHandler advHandler = new AdvHandler(args[0], args[1]);
-        //Stack<Integer> result = advHandler.get_frame_list();
-        //System.out.println("result: " + result);
+        AdvHandler advHandler = new AdvHandler(args[0], args[1]);
+        Stack<Integer> result = advHandler.get_frame_list();
+        System.out.println("result: " + result);
         detect(args[0]);
         System.out.println("map: " + map);
-        //deleteReplace(args[1], args[2], args[3], result);
+        deleteReplace(args[1], args[2], args[3], result);
         
         
     }
