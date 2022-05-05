@@ -257,24 +257,21 @@ public class AdvHandler
     Integer[] arr = null;
     arr = time_clip.toArray(new Integer[time_clip.size()]);
     int prev = arr[0];
-    int count = 0;
     for(int i =1;i<time_clip.size();i++)
     {
       // System.out.println("nonono:" + arr[i]);
       if (arr[i] - prev < 440 && flag == 0)
       {
         res.push(prev);
-        flag ++;
+        flag++;
       }
       if(flag >= 1 && arr[i] - prev >= 440)
       {
         res.push(prev);
-        count++;
 
         flag = 0;
       }
       prev = arr[i];
-      count = 0;
     }
     if (flag == 1) {
     	int size = res.size();
@@ -282,38 +279,9 @@ public class AdvHandler
     }
     if (flag > 1) {
     	res.push(9000);
-
     }
-
-
-    Stack<Integer> ret = new Stack<Integer>();
-    Integer[] arr1 = null;
-    System.out.println("array : " + res);
-    arr1 = res.toArray(new Integer[res.size()]);
-    for(int i =0;i<res.size();i += 2)
-    {
-      if (arr1[i+1] - arr1[i] < 450)
-      {
-        continue;
-      }
-      else if(arr1[i+1] - arr1[i] > 450)
-      {
-        ret.push(arr1[i]);
-        ret.push(arr1[i] + 450);
-      }
-      else{//when euqal
-        ret.push(arr1[i]);
-        ret.push(arr1[i+1]);
-      }
-    }
-    return ret;
+    return res;
   }
 
 
-  public static void main(String[] args)
-  {
-      AdvHandler advHandler = new AdvHandler(args[0], args[1]);
-       Stack<Integer> result = advHandler.get_frame_list();
-        System.out.println("arr:" + result);
-  }
 }
